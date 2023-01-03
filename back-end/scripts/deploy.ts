@@ -4,13 +4,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 async function main() {
-  const privateKey = process.env.PRIVATE_KEY as string;
-  const provider = new ethers.providers.JsonRpcProvider(process.env.GOERLI_NODE_URL);
-
-  const wallet = new ethers.Wallet(privateKey, provider);
-
-  const XFQTokenFactory = await ethers.getContractFactory('XFQToken', wallet);
+  const XFQTokenFactory = await ethers.getContractFactory('XFQToken');
   const XFQToken = await XFQTokenFactory.deploy();
+  await XFQToken.deployed();
   console.log('contract address:', XFQToken.address);
 }
 
@@ -19,4 +15,4 @@ main().catch((error) => {
   process.exitCode = 1;
 });
 
-//0xdfeB24fBA4382DaEb83E34937cAa0E95b9fBD106
+//0xB2882a67239d60a51D9CcA01Eaaa51a468B970dD
