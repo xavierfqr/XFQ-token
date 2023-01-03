@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from 'react';
-import { useErrorNotification, useWarningNotification } from '../hooks/notifications';
+import { useWarningNotification } from '../hooks/notifications';
 import { ethers } from 'ethers';
 import { contractABI, contractAddress } from '../helpers/constant';
 
@@ -29,8 +29,7 @@ export const WalletProvider = ({ children }: React.PropsWithChildren) => {
         return;
       }
       const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-      const account = accounts[0];
-      setCurrentAccount(account);
+      setCurrentAccount(accounts[0]);
     } catch (err) {
       warningNotification('You denied your wallet connection.');
     }
@@ -46,8 +45,7 @@ export const WalletProvider = ({ children }: React.PropsWithChildren) => {
       const accounts = await ethereum.request({ method: 'eth_accounts' });
       if (accounts.length !== 0) {
         setCurrentAccount(accounts[0]);
-
-        await ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: `0x${Number()}` }] });
+        await checkIfNetworkIsGoerli();
 
         return;
       } else {
@@ -65,12 +63,13 @@ export const WalletProvider = ({ children }: React.PropsWithChildren) => {
       return;
     }
 
+    const hex_chainId = ethers.utils.hexValue('0x05');
     try {
       await ethereum.request({
         method: 'wallet_switchEthereumChain',
         params: [
           {
-            chainId: '0x05', // Goerli testnet
+            chainId: hex_chainId, // Goerli testnet
           },
         ],
       });
@@ -82,7 +81,7 @@ export const WalletProvider = ({ children }: React.PropsWithChildren) => {
             method: 'wallet_addEthereumChain',
             params: [
               {
-                chainId: '0x05',
+                chainId: hex_chainId,
                 chainName: 'Goerli Testnet',
                 nativeCurrency: {
                   name: 'Goerli ETH',
@@ -117,7 +116,8 @@ export const WalletProvider = ({ children }: React.PropsWithChildren) => {
       setCurrentAccount(accounts[0] ?? '');
     });
     window.ethereum.on('chainChanged', (chainId: string) => {
-      if (chainId == '0x05') return;
+      const hex_chainId = ethers.utils.hexValue('0x05');
+      if (chainId == hex_chainId) return;
       window.location.reload();
     });
 
