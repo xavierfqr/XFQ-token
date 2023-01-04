@@ -1,11 +1,10 @@
-import React, { useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 type Props = {
   totalSupply: number;
-  getContract: any;
 };
 
-function Meter({ totalSupply, getContract }: Props) {
+function Meter({ totalSupply }: Props) {
   const [cursorSize, setCursorSize] = React.useState(0);
   const meterRef = useRef<HTMLDivElement>(null);
 
@@ -21,7 +20,7 @@ function Meter({ totalSupply, getContract }: Props) {
   console.log(cursorSize);
   return (
     <div className="w-[50rem] mt-16 text-white flex items-center">
-      <div>0&nbsp;Minted</div>
+      <div>{totalSupply}&nbsp;Minted</div>
       <div ref={meterRef} className="bg-gray-900 h-4 w-full rounded-xl mx-4">
         <div className={`bg-gradient-to-r from-blue-700 to-red-700 h-full rounded-xl`} style={{ width: cursorSize }}>
           <i className="absolute mt-5" style={{ marginLeft: cursorSize }}>

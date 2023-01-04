@@ -10,6 +10,7 @@ import Meter from './Meter';
 
 function Main() {
   const [isMinting, setIsMinting] = React.useState(false);
+  const [isTransfering, setIsTransfering] = React.useState(false);
   const [totalSupply, setTotalSupply] = React.useState(0);
   const successNotification = useSuccessNotification();
   const errorNotification = useErrorNotification();
@@ -40,9 +41,15 @@ function Main() {
     e.preventDefault();
     const to = e.target.to.value;
     const tokensCount = e.target.tokensCount.value;
-
-    const contract = await getContract();
-    contract?.transfer(to, tokensCount);
+    try {
+      const contract = await getContract();
+      const txn = await contract?.transfer(to, ethers.utils.parseEther(tokensCount));
+      setIsTransfering(true);
+      txn.wait();
+      setIsTransfering(false);
+    } catch (e) {
+      errorNotification('Transfer Failed :(');
+    }
   };
 
   const handleMint = async () => {
@@ -110,7 +117,7 @@ function Main() {
                 <FormControl>
                   <Input name="to" placeholder="To" className="mb-2" />
                   <Input name="tokensCount" placeholder="Number of tokens"></Input>
-                  <Button colorScheme="blue" className="mt-4 w-full" type="submit">
+                  <Button colorScheme="blue" className="mt-4 w-full" type="submit" isLoading={isTransfering}>
                     Transfer XFQ
                   </Button>
                 </FormControl>
@@ -120,7 +127,7 @@ function Main() {
         </Box>
         <TokenCard></TokenCard>
       </Flex>
-      <Meter totalSupply={totalSupply} getContract={getContract}></Meter>
+      <Meter totalSupply={totalSupply}></Meter>
     </Flex>
   );
 }

@@ -2,9 +2,10 @@ import React, { useContext } from 'react';
 import { Flex, Text, Button } from '@chakra-ui/react';
 import { WalletContext } from '../context/context';
 import { Metamask } from '@web3uikit/icons';
+import { shortenAddress } from '../helpers/utils';
 
 function Navbar() {
-  const { connectWallet } = useContext(WalletContext);
+  const { currentAccount, connectWallet } = useContext(WalletContext);
 
   return (
     <nav>
@@ -12,10 +13,14 @@ function Navbar() {
         <Text className="text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-red-700 font-bold text-3xl">
           ERC20-XFQToken
         </Text>
-        <Button className="p-2 rounded text-white bg-blue-500" colorScheme="whiteAlpha" onClick={connectWallet}>
-          <Metamask fontSize="30px" className="mr-2" />
-          Connect Wallet
-        </Button>
+        {currentAccount ? (
+          <Text className="text-white">👋 {shortenAddress(currentAccount)}</Text>
+        ) : (
+          <Button className="p-2 rounded text-white bg-blue-500" colorScheme="whiteAlpha" onClick={connectWallet}>
+            <Metamask fontSize="30px" className="mr-2" />
+            Connect Wallet
+          </Button>
+        )}
       </Flex>
     </nav>
   );
