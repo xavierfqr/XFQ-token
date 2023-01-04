@@ -9,13 +9,7 @@ type WalletContext = {
   getContract: () => Promise<ethers.Contract | undefined>;
 };
 
-const WalletContext = createContext<WalletContext>({
-  currentAccount: '',
-  connectWallet: async () => {},
-  getContract: async () => {
-    return undefined;
-  },
-});
+export const WalletContext = createContext<WalletContext>({} as WalletContext);
 
 export const WalletProvider = ({ children }: React.PropsWithChildren) => {
   const [currentAccount, setCurrentAccount] = useState('');
