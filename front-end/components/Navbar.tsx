@@ -10,7 +10,7 @@ function Navbar() {
   return (
     <nav>
       <Flex className="justify-between py-2 px-4 md:py-4 md:px-8 text-xl items-center">
-        <Text className="text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-red-700 font-bold text-lg md:text-3xl">
+        <Text className="text-transparent bg-clip-text bg-gradient-to-r from-[#c21500] to-[#ffc500] font-bold text-lg md:text-3xl">
           ERC20-XFQToken
         </Text>
         {currentAccount ? (

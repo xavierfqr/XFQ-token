@@ -83,7 +83,7 @@ function Main() {
           <div>Ethereum Request for</div>
           <span>
             Comments{' '}
-            <Text as="span" className="text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-red-700">
+            <Text as="span" className="text-transparent bg-clip-text bg-gradient-to-r from-[#c21500] to-[#ffc500]">
               XFQ Token
             </Text>
           </span>

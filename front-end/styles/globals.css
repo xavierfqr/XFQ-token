@@ -3,15 +3,15 @@
 @tailwind utilities;
 
 .cardStyle {
-    background-color:#99b1ff;
+    background-color:#e2ff99;
     background-image:
-    radial-gradient(at 21% 66%, hsla(167,87%,68%,1) 0px, transparent 50%),
-    radial-gradient(at 96% 65%, hsla(356,61%,78%,1) 0px, transparent 50%),
-    radial-gradient(at 24% 35%, hsla(314,68%,61%,1) 0px, transparent 50%),
-    radial-gradient(at 78% 3%, hsla(197,64%,78%,1) 0px, transparent 50%),
-    radial-gradient(at 84% 81%, hsla(295,63%,64%,1) 0px, transparent 50%),
-    radial-gradient(at 95% 28%, hsla(31,98%,65%,1) 0px, transparent 50%),
-    radial-gradient(at 14% 13%, hsla(247,89%,70%,1) 0px, transparent 50%);
+    radial-gradient(at 90% 28%, hsla(344,98%,65%,1) 0px, transparent 50%),
+    radial-gradient(at 11% 1%, hsla(38,90%,72%,1) 0px, transparent 50%),
+    radial-gradient(at 20% 20%, hsla(221,65%,72%,1) 0px, transparent 50%),
+    radial-gradient(at 35% 81%, hsla(17,87%,62%,1) 0px, transparent 50%),
+    radial-gradient(at 5% 91%, hsla(51,99%,70%,1) 0px, transparent 50%),
+    radial-gradient(at 8% 26%, hsla(20,72%,79%,1) 0px, transparent 50%),
+    radial-gradient(at 76% 0%, hsla(203,81%,69%,1) 0px, transparent 50%);
 }
 
 meter::-webkit-meter-optimum-value {

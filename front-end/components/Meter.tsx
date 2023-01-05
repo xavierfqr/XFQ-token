@@ -20,7 +20,7 @@ function Meter({ totalSupply }: Props) {
     <div className="w-[18rem] md:w-[50rem] mt-16 text-white flex items-center">
       <div className="hidden md:block">{totalSupply}&nbsp;Minted</div>
       <div ref={meterRef} className="bg-gray-900 h-4 w-full rounded-xl mx-4">
-        <div className={`bg-gradient-to-r from-blue-700 to-red-700 h-full rounded-xl`} style={{ width: cursorSize }}>
+        <div className={`bg-gradient-to-r from-[#c21500] to-[#ffc500] h-full rounded-xl`} style={{ width: cursorSize }}>
           <i className="absolute mt-5" style={{ marginLeft: cursorSize }}>
             {150 - totalSupply} tokens left
           </i>
