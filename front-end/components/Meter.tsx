@@ -9,7 +9,6 @@ function Meter({ totalSupply }: Props) {
   const meterRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    console.log('here', totalSupply);
     let length = 16;
     if (totalSupply > 4) {
       length = Math.round(((meterRef.current?.offsetWidth ?? 1) * totalSupply) / 150);
@@ -17,7 +16,6 @@ function Meter({ totalSupply }: Props) {
     setCursorSize(length);
   }, [meterRef.current?.offsetWidth, totalSupply]);
 
-  console.log(cursorSize);
   return (
     <div className="w-[50rem] mt-16 text-white flex items-center">
       <div>{totalSupply}&nbsp;Minted</div>

@@ -4,23 +4,12 @@ import { WalletContext } from '../context/context';
 import { shortenAddress } from '../helpers/utils';
 import { Eth } from '@web3uikit/icons';
 
-function TokenCard() {
-  const { currentAccount, getContract } = useContext(WalletContext);
-  const [balance, setBalance] = useState(0);
+function TokenCard({ balance }: { balance: number }) {
+  const { currentAccount, totalSupply } = useContext(WalletContext);
 
-  useEffect(() => {
-    async function fetchBalance() {
-      if (!currentAccount) return;
-      const contract = await getContract();
-      const res = await contract?.balanceOf(currentAccount);
-      setBalance(parseInt(res._hex) / 10 ** 18);
-    }
-    fetchBalance();
-  }, [getContract, currentAccount]);
-
-  console.log(balance);
+  console.log('token card total supply', totalSupply);
   return (
-    <Box className="cardStyle w-96 h-52 rounded-2xl p-4">
+    <Box id={String(totalSupply)} className="cardStyle w-96 h-52 rounded-2xl p-4">
       <Flex className="h-full justify-between">
         <Flex className="flex-col justify-between h-full">
           <h1 className="text-2xl font-semibold">Ethereum</h1>

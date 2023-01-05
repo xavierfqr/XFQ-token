@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import { Flex, Text, Box, useNumberInput, HStack, Button, Input, FormControl } from '@chakra-ui/react';
 import { TabList, Tab, CopyButton } from '@web3uikit/core';
 import { WalletContext } from '../context/context';
@@ -7,14 +7,15 @@ import { useErrorNotification, useSuccessNotification } from '../hooks/notificat
 import { ethers } from 'ethers';
 import TokenCard from './TokenCard';
 import Meter from './Meter';
+import TokenHolders from './TokenHolders';
 
 function Main() {
   const [isMinting, setIsMinting] = React.useState(false);
   const [isTransfering, setIsTransfering] = React.useState(false);
-  const [totalSupply, setTotalSupply] = React.useState(0);
+  const [accountBalance, setAccountBalance] = React.useState(0);
   const successNotification = useSuccessNotification();
   const errorNotification = useErrorNotification();
-  const { currentAccount, getContract } = useContext(WalletContext);
+  const { currentAccount, getContract, updateTotalSupply, totalSupply } = useContext(WalletContext);
 
   const {
     getInputProps,
@@ -30,12 +31,14 @@ function Main() {
   });
 
   useEffect(() => {
-    async function getTotalSupply() {
+    async function fetchBalance() {
+      if (!currentAccount) return;
       const contract = await getContract();
-      setTotalSupply((await contract?.totalSupply()) / 10 ** 18);
+      const res = await contract?.balanceOf(currentAccount);
+      setAccountBalance(parseInt(res._hex) / 10 ** 18);
     }
-    getTotalSupply();
-  }, [getContract]);
+    fetchBalance();
+  }, [getContract, currentAccount, totalSupply]);
 
   const handleFormSubmit = async (e: any) => {
     e.preventDefault();
@@ -47,6 +50,7 @@ function Main() {
       setIsTransfering(true);
       txn.wait();
       setIsTransfering(false);
+      updateTotalSupply();
     } catch (e) {
       errorNotification('Transfer Failed :(');
     }
@@ -65,6 +69,7 @@ function Main() {
       setIsMinting(true);
       await txn.wait();
       setIsMinting(false);
+      updateTotalSupply();
       successNotification('Mint Successful!');
     } catch (e) {
       errorNotification('Mint Failed :(');
@@ -100,7 +105,13 @@ function Main() {
                 </Button>
               </HStack>
               <Box className="mt-2">{Number(mintAmount) * 0.02} Goerli Ether</Box>
-              <Button colorScheme="blue" className="mt-4 w-full" onClick={handleMint} isLoading={isMinting}>
+              <Button
+                colorScheme="blue"
+                className="mt-4 w-full"
+                onClick={handleMint}
+                isLoading={isMinting}
+                disabled={Number(mintAmount) == 0 || isMinting}
+              >
                 Mint XFQ
               </Button>
             </Tab>
@@ -125,9 +136,12 @@ function Main() {
             </Tab>
           </TabList>
         </Box>
-        <TokenCard></TokenCard>
+        <TokenCard balance={accountBalance}></TokenCard>
       </Flex>
-      <Meter totalSupply={totalSupply}></Meter>
+      <Box className="mb-14">
+        <Meter totalSupply={totalSupply}></Meter>
+      </Box>
+      <TokenHolders></TokenHolders>
     </Flex>
   );
 }

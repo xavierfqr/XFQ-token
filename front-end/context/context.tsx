@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useEffect, useState } from 'react';
 import { useWarningNotification } from '../hooks/notifications';
 import { ethers } from 'ethers';
 import { contractABI, contractAddress } from '../helpers/constant';
@@ -7,12 +7,15 @@ type WalletContext = {
   currentAccount: string;
   connectWallet: () => Promise<void>;
   getContract: () => Promise<ethers.Contract | undefined>;
+  updateTotalSupply: () => Promise<void>;
+  totalSupply: number;
 };
 
 export const WalletContext = createContext<WalletContext>({} as WalletContext);
 
 export const WalletProvider = ({ children }: React.PropsWithChildren) => {
   const [currentAccount, setCurrentAccount] = useState('');
+  const [totalSupply, setTotalSupply] = useState(0);
   const warningNotification = useWarningNotification();
 
   const connectWallet = async () => {
@@ -94,13 +97,22 @@ export const WalletProvider = ({ children }: React.PropsWithChildren) => {
     }
   };
 
-  const getContract = async () => {
+  const getContractWithSigner = useCallback(async () => {
     const { ethereum } = window;
     if (!ethereum) return;
 
     const provider = new ethers.providers.Web3Provider(ethereum);
     return new ethers.Contract(contractAddress, contractABI, provider.getSigner());
-  };
+  }, []);
+
+  const updateTotalSupply = useCallback(async () => {
+    const contract = await getContractWithSigner();
+    setTotalSupply((await contract?.totalSupply()) / 10 ** 18);
+  }, [getContractWithSigner, setTotalSupply]);
+
+  useEffect(() => {
+    updateTotalSupply();
+  }, [updateTotalSupply]);
 
   useEffect(() => {
     if (!window.ethereum) return;
@@ -122,6 +134,10 @@ export const WalletProvider = ({ children }: React.PropsWithChildren) => {
   }, []);
 
   return (
-    <WalletContext.Provider value={{ currentAccount, connectWallet, getContract }}>{children}</WalletContext.Provider>
+    <WalletContext.Provider
+      value={{ currentAccount, connectWallet, getContract: getContractWithSigner, updateTotalSupply, totalSupply }}
+    >
+      {children}
+    </WalletContext.Provider>
   );
 };
