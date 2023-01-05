@@ -4,7 +4,7 @@ import React from 'react';
 function TokenHolders() {
   return (
     <div>
-      <Box className="text-3xl text-slate-300">Token Holders</Box>
+      <Box className="text-3xl text-slate-300"></Box>
     </div>
   );
 }

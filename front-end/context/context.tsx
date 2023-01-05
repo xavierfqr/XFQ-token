@@ -111,8 +111,9 @@ export const WalletProvider = ({ children }: React.PropsWithChildren) => {
   }, [getContractWithSigner, setTotalSupply]);
 
   useEffect(() => {
+    if (!currentAccount) return;
     updateTotalSupply();
-  }, [updateTotalSupply]);
+  }, [updateTotalSupply, currentAccount]);
 
   useEffect(() => {
     if (!window.ethereum) return;

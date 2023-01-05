@@ -77,9 +77,9 @@ function Main() {
   };
 
   return (
-    <Flex className="flex-col items-center">
+    <Flex className="flex-col items-center overflow-auto">
       <Flex className="flex-col mb-16 mx-16">
-        <Text as="div" className="text-gray-200 text-6xl m-auto text-center">
+        <Text as="div" className="text-gray-200 text-4xl md:text-6xl m-auto text-center">
           <div>Ethereum Request for</div>
           <span>
             Comments{' '}
@@ -89,8 +89,8 @@ function Main() {
           </span>
         </Text>
       </Flex>
-      <Flex className="items-center gap-10">
-        <Box className="rounded-xl bg-slate-900 p-4 w-96">
+      <Flex className="items-center gap-10 flex-col md:flex-row">
+        <Box className="rounded-xl bg-slate-900 p-4 w-64 md:w-96">
           <TabList defaultActiveKey={0} tabStyle="bar">
             <Tab tabKey={0} tabName="Mint">
               <Box>1 XFQ Token = 0.02 Goerli Ether + gas fee</Box>
@@ -110,7 +110,7 @@ function Main() {
                 className="mt-4 w-full"
                 onClick={handleMint}
                 isLoading={isMinting}
-                disabled={Number(mintAmount) == 0 || isMinting}
+                disabled={Number(mintAmount) == 0 || isMinting || !currentAccount}
               >
                 Mint XFQ
               </Button>
