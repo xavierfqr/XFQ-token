@@ -7,7 +7,6 @@ import { Eth } from '@web3uikit/icons';
 function TokenCard({ balance }: { balance: number }) {
   const { currentAccount, totalSupply } = useContext(WalletContext);
 
-  console.log('token card total supply', totalSupply);
   return (
     <Box id={String(totalSupply)} className="cardStyle w-64 h-36 md:w-96 md:h-52 rounded-2xl p-4">
       <Flex className="h-full justify-between">
