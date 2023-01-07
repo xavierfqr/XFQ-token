@@ -8,6 +8,10 @@ import { ethers } from 'ethers';
 import TokenCard from './TokenCard';
 import Meter from './Meter';
 import TokenHolders from './TokenHolders';
+import Moralis from 'moralis';
+import { EvmChain } from '@moralisweb3/common-evm-utils';
+import { contractAddress } from '../helpers/constant';
+import axios from 'axios';
 
 function Main() {
   const [isMinting, setIsMinting] = React.useState(false);
@@ -29,6 +33,20 @@ function Main() {
     max: 10,
     precision: 0,
   });
+
+  useEffect(() => {
+    axios.get('/api/moralis/moralis');
+    // async function initMoralis() {
+    //   const chain = EvmChain.ETHEREUM;
+    //   const response = await Moralis.EvmApi.token.getTokenTransfers({
+    //     address: contractAddress,
+    //     chain,
+    //   });
+
+    //   console.log(response.toJSON());
+    // }
+    // initMoralis();
+  }, []);
 
   useEffect(() => {
     async function fetchBalance() {
