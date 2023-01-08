@@ -35,20 +35,6 @@ function Main() {
   });
 
   useEffect(() => {
-    axios.get('/api/moralis/moralis');
-    // async function initMoralis() {
-    //   const chain = EvmChain.ETHEREUM;
-    //   const response = await Moralis.EvmApi.token.getTokenTransfers({
-    //     address: contractAddress,
-    //     chain,
-    //   });
-
-    //   console.log(response.toJSON());
-    // }
-    // initMoralis();
-  }, []);
-
-  useEffect(() => {
     async function fetchBalance() {
       if (!currentAccount) return;
       const contract = await getContract();
