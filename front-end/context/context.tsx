@@ -9,6 +9,7 @@ type WalletContext = {
   getContract: () => Promise<ethers.Contract | undefined>;
   updateTotalSupply: () => Promise<void>;
   totalSupply: number;
+  chainId: string;
 };
 
 export const WalletContext = createContext<WalletContext>({} as WalletContext);
@@ -16,6 +17,7 @@ export const WalletContext = createContext<WalletContext>({} as WalletContext);
 export const WalletProvider = ({ children }: React.PropsWithChildren) => {
   const [currentAccount, setCurrentAccount] = useState('');
   const [totalSupply, setTotalSupply] = useState(0);
+  const [chainId, setChainId] = useState('0x00');
   const warningNotification = useWarningNotification();
 
   const connectWallet = async () => {
@@ -98,17 +100,28 @@ export const WalletProvider = ({ children }: React.PropsWithChildren) => {
   };
 
   const getContractWithSigner = useCallback(async () => {
+    console.log(chainId);
+
     const { ethereum } = window;
     if (!ethereum) return;
+    if (chainId !== '0x5') return;
 
     const provider = new ethers.providers.Web3Provider(ethereum);
     return new ethers.Contract(contractAddress, contractABI, provider.getSigner());
-  }, []);
+  }, [chainId]);
 
   const updateTotalSupply = useCallback(async () => {
     const contract = await getContractWithSigner();
     setTotalSupply((await contract?.totalSupply()) / 10 ** 18);
   }, [getContractWithSigner, setTotalSupply]);
+
+  useEffect(() => {
+    async function fetchChainId() {
+      if (!window.ethereum) return;
+      setChainId(await window.ethereum.request({ method: 'eth_chainId' }));
+    }
+    fetchChainId();
+  }, [currentAccount]);
 
   useEffect(() => {
     if (!currentAccount) return;
@@ -125,6 +138,7 @@ export const WalletProvider = ({ children }: React.PropsWithChildren) => {
     window.ethereum.on('chainChanged', (chainId: string) => {
       const hex_chainId = ethers.utils.hexValue('0x05');
       if (chainId == hex_chainId) return;
+      setChainId(hex_chainId);
       window.location.reload();
     });
 
@@ -136,7 +150,14 @@ export const WalletProvider = ({ children }: React.PropsWithChildren) => {
 
   return (
     <WalletContext.Provider
-      value={{ currentAccount, connectWallet, getContract: getContractWithSigner, updateTotalSupply, totalSupply }}
+      value={{
+        currentAccount,
+        connectWallet,
+        getContract: getContractWithSigner,
+        updateTotalSupply,
+        totalSupply,
+        chainId,
+      }}
     >
       {children}
     </WalletContext.Provider>

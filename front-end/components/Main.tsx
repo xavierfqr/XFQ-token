@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useMemo } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Flex, Text, Box, useNumberInput, HStack, Button, Input, FormControl } from '@chakra-ui/react';
 import { TabList, Tab, CopyButton } from '@web3uikit/core';
 import { WalletContext } from '../context/context';
@@ -8,10 +8,6 @@ import { ethers } from 'ethers';
 import TokenCard from './TokenCard';
 import Meter from './Meter';
 import TokenHolders from './TokenHolders';
-import Moralis from 'moralis';
-import { EvmChain } from '@moralisweb3/common-evm-utils';
-import { contractAddress } from '../helpers/constant';
-import axios from 'axios';
 
 function Main() {
   const [isMinting, setIsMinting] = React.useState(false);
@@ -19,7 +15,7 @@ function Main() {
   const [accountBalance, setAccountBalance] = React.useState(0);
   const successNotification = useSuccessNotification();
   const errorNotification = useErrorNotification();
-  const { currentAccount, getContract, updateTotalSupply, totalSupply } = useContext(WalletContext);
+  const { currentAccount, getContract, updateTotalSupply, totalSupply, chainId } = useContext(WalletContext);
 
   const {
     getInputProps,
@@ -36,13 +32,18 @@ function Main() {
 
   useEffect(() => {
     async function fetchBalance() {
+      console.log({ currentAccount });
+      console.log({ chainId });
       if (!currentAccount) return;
+      if (chainId !== '0x5') return;
+
       const contract = await getContract();
       const res = await contract?.balanceOf(currentAccount);
+
       setAccountBalance(parseInt(res._hex) / 10 ** 18);
     }
     fetchBalance();
-  }, [getContract, currentAccount, totalSupply]);
+  }, [getContract, currentAccount, totalSupply, chainId]);
 
   const handleFormSubmit = async (e: any) => {
     e.preventDefault();
