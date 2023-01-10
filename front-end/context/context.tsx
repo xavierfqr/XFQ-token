@@ -34,28 +34,7 @@ export const WalletProvider = ({ children }: React.PropsWithChildren) => {
     }
   };
 
-  const checkIfWalletIsConnected = async () => {
-    try {
-      const { ethereum } = window;
-      if (!ethereum) {
-        warningNotification('Make sure you have metamask!');
-        return;
-      }
-      const accounts = await ethereum.request({ method: 'eth_accounts' });
-      if (accounts.length !== 0) {
-        setCurrentAccount(accounts[0]);
-        await checkIfNetworkIsGoerli();
-
-        return;
-      } else {
-        warningNotification('Connect to MetaMask using the top right button.');
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const checkIfNetworkIsGoerli = async () => {
+  const checkIfNetworkIsGoerli = useCallback(async () => {
     const { ethereum } = window;
     if (!ethereum) {
       warningNotification('Make sure you have metamask!');
@@ -97,14 +76,32 @@ export const WalletProvider = ({ children }: React.PropsWithChildren) => {
         }
       }
     }
-  };
+  }, [warningNotification]);
+
+  const checkIfWalletIsConnected = useCallback(async () => {
+    try {
+      const { ethereum } = window;
+      if (!ethereum) {
+        warningNotification('Make sure you have metamask!');
+        return;
+      }
+      const accounts = await ethereum.request({ method: 'eth_accounts' });
+      if (accounts.length !== 0) {
+        setCurrentAccount(accounts[0]);
+        await checkIfNetworkIsGoerli();
+
+        return;
+      } else {
+        warningNotification('Connect to MetaMask using the top right button.');
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }, [checkIfNetworkIsGoerli, warningNotification]);
 
   const getContractWithSigner = useCallback(async () => {
-    console.log(chainId);
-
     const { ethereum } = window;
-    if (!ethereum) return;
-    if (chainId !== '0x5') return;
+    if (!ethereum || chainId !== '0x5') return;
 
     const provider = new ethers.providers.Web3Provider(ethereum);
     return new ethers.Contract(contractAddress, contractABI, provider.getSigner());
@@ -137,8 +134,10 @@ export const WalletProvider = ({ children }: React.PropsWithChildren) => {
     });
     window.ethereum.on('chainChanged', (chainId: string) => {
       const hex_chainId = ethers.utils.hexValue('0x05');
-      if (chainId == hex_chainId) return;
-      setChainId(hex_chainId);
+      if (chainId == hex_chainId) {
+        setChainId(chainId);
+        return;
+      }
       window.location.reload();
     });
 
@@ -146,7 +145,7 @@ export const WalletProvider = ({ children }: React.PropsWithChildren) => {
       window.ethereum.removeAllListeners('accountsChanged');
       window.ethereum.removeAllListeners('chainChanged');
     };
-  }, []);
+  }, [checkIfWalletIsConnected]);
 
   return (
     <WalletContext.Provider

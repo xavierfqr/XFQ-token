@@ -17,6 +17,8 @@ function Main() {
   const errorNotification = useErrorNotification();
   const { currentAccount, getContract, updateTotalSupply, totalSupply, chainId } = useContext(WalletContext);
 
+  useEffect(() => {}, [chainId]);
+
   const {
     getInputProps,
     getIncrementButtonProps,
@@ -32,10 +34,7 @@ function Main() {
 
   useEffect(() => {
     async function fetchBalance() {
-      console.log({ currentAccount });
-      console.log({ chainId });
-      if (!currentAccount) return;
-      if (chainId !== '0x5') return;
+      if (!currentAccount || chainId !== '0x5') return;
 
       const contract = await getContract();
       const res = await contract?.balanceOf(currentAccount);
