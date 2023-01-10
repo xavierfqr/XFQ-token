@@ -1,4 +1,5 @@
 import { useNotification } from '@web3uikit/core';
+import { useCallback } from 'react';
 
 export function useErrorNotification() {
   const dispatch = useNotification();
@@ -18,14 +19,14 @@ export function useErrorNotification() {
 export function useWarningNotification() {
   const dispatch = useNotification();
 
-  const handleErrorNotification = (message: string) => {
+  const handleErrorNotification = useCallback((message: string) => {
     dispatch({
       type: 'warning',
       message,
       title: 'Warning',
       position: 'topR',
     });
-  };
+  }, []);
 
   return handleErrorNotification;
 }

@@ -96,7 +96,7 @@ function Main() {
       <Flex className="items-center gap-10 flex-col md:flex-row">
         <Box className="rounded-xl bg-slate-900 p-4 w-64 md:w-96">
           <TabList defaultActiveKey={0} tabStyle="bar">
-            <Tab tabKey={0} tabName="Mint">
+            <Tab key={0} tabKey={0} tabName="Mint">
               <Box>1 XFQ Token = 0.02 Goerli Ether + gas fee</Box>
               <HStack maxW="320px" className="mt-2">
                 <Button {...getDecrementButtonProps()} colorScheme="whiteAlpha">
@@ -119,7 +119,7 @@ function Main() {
                 Mint XFQ
               </Button>
             </Tab>
-            <Tab tabKey={1} tabName="Transfer">
+            <Tab key={1} tabKey={1} tabName="Transfer">
               <Box>
                 From {shortenAddress(currentAccount)}
                 <CopyButton
